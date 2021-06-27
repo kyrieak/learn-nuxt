@@ -24,6 +24,7 @@ export default {
     components: {
         MyCarousel
     },
+    middleware: ['greeting'],
     data() {
         return {
             settings: {
