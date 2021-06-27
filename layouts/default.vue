@@ -1,5 +1,12 @@
 <template>
     <div>
+        <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.4.0/dist/lazyload.min.js"></script>
+        <script type="text/javascript">
+            var lazyLoadInstance = new LazyLoad({
+            // Your custom settings go here
+            });
+        </script>
+    
         <header style="background-color: black">
             <a href="/"><Logo style="height: 50px; width: 50px"></Logo></a>
         </header>
@@ -8,7 +15,6 @@
         </main>
     </div>
 </template>
-
 <style>
 html {
     font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont,

@@ -1,38 +1,31 @@
 <template>
-    <div class="carousel-wrapper">
+    <div :class="`carousel-wrapper carousel-wrapper--${carouselID}`">
         <div class="carousel-wrapper__inner">
-            <div class="loading-carousel" v-show="!showCarousel">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-            <VueSlickCarousel
-                @init="onInitCarousel"
-                :style="{visibility: showCarousel ? 'visible': 'hidden'}"
-                v-bind="settings">
-                <div v-for="(value, index) in arr" 
+            <button @click="onClickPrev">Prev</button>
+            <button @click="onClickNext">Next</button>
+            <Hooper
+                ref="hcarousel"
+                :settings="settings">
+                <Slide v-for="(data, index) in slideData" 
                     class="slide-content-wrapper"
                     :key="index"
                     >
                     <div class="slide-content">
-                        <img :src="`https://via.placeholder.com/200x100.png?text=${carouselID + ' ' + index}`" width="100%" height="auto">
+                        <img class="lazy" :data-src="data.slideImgSrc" width="100%" height="auto">
                     </div>
-                </div>                
-            </VueSlickCarousel>
+                </Slide>
+            </Hooper>
         </div>
     </div>        
 </template>
 
 <script>
-    import 'vue-slick-carousel/dist/vue-slick-carousel.css'
-    // optional style for arrows & dots
-    import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
-    import VueSlickCarousel from "vue-slick-carousel";
-
+    import { Hooper, Slide } from 'hooper';
+    import 'hooper/dist/hooper.css';
+    
     export default {
         name: 'MyCarousel',
-        components: { VueSlickCarousel },
+        components: { Hooper, Slide },
         props: {
             carouselID: {
                 type: String,
@@ -43,50 +36,27 @@
                 required: false,
                 default: () => {
                     return {
-                        arrows: true,
-                        infinite: false,
-                        dots: false,
-                        slidesToShow: 4,
-                        slidesToScroll: 4,
-                        lazyLoad: 'ondemand',
-                        
-                        responsive: [
-                            {
-                                breakpoint: 480,
-                                settings: {
-                                    unslick: false,
-                                    slidesToShow: 1,
-                                    slidesToScroll: 1,
-                                }
+                        itemsToShow: 4,
+                        itemsToSlide: 4,
+                        wheelControl: false,
+                        breakpoints: {
+                            480: {
+                                itemsToShow: 1,
+                                itemsToSlide: 1,
                             },
-                            {
-                                breakpoint: 600,
-                                settings: {
-                                    unslick: false,
-                                    slidesToShow: 2,
-                                    slidesToScroll: 2,
-                                    dots: true,
-                                }
+                            600: {
+                                itemsToShow: 2,
+                                itemsToSlide: 2,
                             },
-                            {
-                                breakpoint: 1024,
-                                settings: {
-                                    unslick: false,
-                                    slidesToShow: 3,
-                                    slidesToScroll: 3,
-                                    dots: true,
-                                }
+                            1024: {
+                                itemsToShow: 3,
+                                itemsToSlide: 3,
                             },
-                            {
-                                breakpoint: 1400,
-                                settings: {
-                                    unslick: false,
-                                    slidesToShow: 4,
-                                    slidesToScroll: 4,
-                                    dots: true,
-                                }
+                            1400: {
+                                itemsToShow: 4,
+                                itemsToSlide: 4,
                             },
-                        ],
+                        },
                     }
                 }
             }
@@ -94,23 +64,34 @@
 
         data() {
             return {
-                showCarousel: false,
-                arr: new Array(20)
+                arr: new Array(20).fill(null),
+            }
+        },
+
+        computed: {
+            slideData() {
+                return this.arr.map((item, index) => {
+                    return {
+                        slideImgSrc: `https://via.placeholder.com/200x100.png?text=${this.carouselID + ' ' + (index + 1)}`
+                    }
+                })
             }
         },
 
         methods: {
-            onInitCarousel(e) {
-                console.log('onInitCarousel', e)
-//                this.showCarousel = true
+            onClickPrev() {
+                this.$refs.hcarousel.slidePrev()
             },
+
+            onClickNext() {
+                this.$refs.hcarousel.slideNext()
+            }
         },
-        mounted() {
-            this.$nextTick()
-                .then(() => {
-                    console.log('nextick')
-                    this.showCarousel = true
-                })
+
+        mounted() {   
+            var lazyLoadInstance = new LazyLoad({
+                container: document.querySelector(`.carousel-wrapper--${this.carouselID}`)
+            });         
         },
     };
 </script>
@@ -135,83 +116,9 @@
     color: #35495e;
     letter-spacing: 1px;
 }
-.carousel-wrapper {
-    position: relative;
-    height: 200px;
-}
 
-.carousel-wrapper__inner {
-    position: absolute;
-    left: 30px;
-    right: 30px;
-}
-
-.loading-carousel {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;    
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 10px;
-    height: 100px;
-    padding: 0 5px;
-}
-
-.loading-carousel > div {
-    display: none;
-    padding-top: 50%;
-}
-
-.loading-carousel > div:nth-of-type(1)  {
-    display: block;
-}
-
-@media (min-width: 480px) {
-    .loading-carousel {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .loading-carousel > div:nth-of-type(2)  {
-        display: block;
-    }
-}
-
-@media (min-width: 600px) {
-    .loading-carousel {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-
-    .loading-carousel > div:nth-of-type(3)  {
-        display: block;
-    }
-}
-
-@media (min-width: 1024px) {
-    .loading-carousel {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-    }
-
-    .loading-carousel > div:nth-of-type(4)  {
-        display: block;
-    }
-}
-
-.loading-carousel > div {
-    background-color: gray;
-}
-
-.slick-track > div .slide-content-wrapper {
+.slide-content-wrapper {
     padding-left: 5px;
     padding-right: 5px;
 }
-
-.slide-content {
-    height: 100%;
-}
-
-.slick-arrow {
-    background-color: red;
-}
-
 </style>

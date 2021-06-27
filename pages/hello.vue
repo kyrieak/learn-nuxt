@@ -16,6 +16,7 @@
 </template>
 
 <script>
+
 import MyCarousel from '../components/MyCarousel.vue'
 
 export default {
