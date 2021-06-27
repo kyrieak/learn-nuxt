@@ -11,7 +11,7 @@
                     :key="index"
                     >
                     <div class="slide-content">
-                        <img class="lazy" :data-src="data.slideImgSrc" width="100%" height="auto">
+                        <img class="lazy" :data-src="data.slideImgSrc">
                     </div>
                 </Slide>
             </Hooper>
@@ -31,10 +31,25 @@
                 type: String,
                 required: false,
             },
-            settings: {
-                type: Object,
-                required: false,
-                default: () => {
+        },
+
+        data() {
+            return {
+                arr: new Array(20).fill(null),
+            }
+        },
+
+        computed: {
+            slideData() {
+                return this.arr.map((item, index) => {
+                    return {
+                        slideImgSrc: `https://via.placeholder.com/200x100.png?text=${this.carouselID + ' ' + (index + 1)}`
+                    }
+                })
+            },
+
+            settings() {
+                {
                     return {
                         itemsToShow: 4,
                         itemsToSlide: 4,
@@ -62,22 +77,6 @@
             }
         },
 
-        data() {
-            return {
-                arr: new Array(20).fill(null),
-            }
-        },
-
-        computed: {
-            slideData() {
-                return this.arr.map((item, index) => {
-                    return {
-                        slideImgSrc: `https://via.placeholder.com/200x100.png?text=${this.carouselID + ' ' + (index + 1)}`
-                    }
-                })
-            }
-        },
-
         methods: {
             onClickPrev() {
                 this.$refs.hcarousel.slidePrev()
@@ -97,28 +96,14 @@
 </script>
 
 <style>
-.container {
-    margin: 0 auto;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.title {
-    font-family: "Quicksand", "Source Sans Pro", -apple-system,
-        BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-        sans-serif;
-    display: block;
-    font-weight: 300;
-    font-size: 100px;
-    color: #35495e;
-    letter-spacing: 1px;
+.slide-content img {
+    width: 100%;
+    height: auto;
 }
 
 .slide-content-wrapper {
     padding-left: 5px;
     padding-right: 5px;
 }
+
 </style>
