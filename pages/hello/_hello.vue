@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <section style="width: 100%">
-            <h1 class="title">Hello</h1>
+            <h1 class="title">{{$route.params.hello}}</h1>
             <section>
                 <h2>Carousel A</h2>
                 <MyCarousel carouselID="a"></MyCarousel>
@@ -17,7 +17,7 @@
 
 <script>
 
-import MyCarousel from '../components/MyCarousel.vue'
+import MyCarousel from '../../components/MyCarousel.vue'
 
 export default {
     name: "hello",
@@ -33,6 +33,9 @@ export default {
                 infinite: false,
             }
         }
+    },
+    created() {
+        console.log(this.route)
     }
 };
 </script>

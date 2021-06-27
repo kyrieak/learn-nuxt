@@ -8,7 +8,7 @@
         </script>
     
         <header style="background-color: black">
-            <a href="/"><Logo style="height: 50px; width: 50px"></Logo></a>
+            <NuxtLink to="/"><Logo style="height: 50px; width: 50px"></Logo></NuxtLink>
         </header>
         <main>
             <Nuxt />
