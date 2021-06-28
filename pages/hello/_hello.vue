@@ -36,7 +36,10 @@ export default {
         }
     },
     created() {
-        console.log(this.route)
+        this.$axios.get('/api/hello/0')
+        .then(({data}) => {
+            console.log('/api/hello/0', data)
+        })
     }
 };
 </script>

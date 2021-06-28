@@ -1,27 +1,11 @@
-export default async function ({ route, redirect }) {
-  const ok = await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const ok = [
-            'Habari',
-            'Hoi',
-            'Yassou',
-            'Cześć, Witaj',
-            'selam',
-            'hai',
-            'helo',
-            'halo',
-            'hej',
-        ].includes(route.params.hello)
+export default async function ({ $axios, route, redirect }) {
+    try {
+        const {data} = await $axios.get('/api/hellos/')
 
-        if (!ok) {
-            resolve(false)
-        } else {
-            resolve(true)
+        if (!data.includes(route.params.hello)) {
+            throw new Error(route.params.hello + 'not found')
         }
-      }, 2000)
-  })
-
-  if (!ok) {
-    return redirect('/error/404')
-  }
+    } catch(e) {
+        return redirect('/error/404')
+    }
 }
